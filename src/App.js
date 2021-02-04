@@ -15,7 +15,7 @@ class App extends Component {
   }
   
   componentDidMount() {
-    const url = `${process.env.REACT_APP_NEWS_URL}?apiKey=${process.env.REACT_APP_NEWS_API_KEY}&category=business&pageSize=5`
+    const url = `${process.env.REACT_APP_NEWS_URL}?apiKey=${process.env.REACT_APP_NEWS_API_KEY}&category=${this.state.category}&pageSize=10`
     axios.get(url)
       .then(res => {
         this.setState({
@@ -26,8 +26,21 @@ class App extends Component {
         console.log(err);
       })
   }
+  componentDidUpdate(prevProps, prevState) {
+    if(prevState.category !== this.state.category) {
+      const url = `${process.env.REACT_APP_NEWS_URL}?apiKey=${process.env.REACT_APP_NEWS_API_KEY}&category=${this.state.category}&pageSize=10`
+      axios.get(url)
+        .then(res => {
+          this.setState({
+            news: res.data.articles
+          })
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    }
+  }
   render() {
-    console.log(this.state.news)
     return (
       <div className="container">
         <div className="row">
