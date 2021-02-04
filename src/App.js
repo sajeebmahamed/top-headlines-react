@@ -1,34 +1,29 @@
+import axios from 'axios';
 import React, { Component } from 'react';
 import Header from './components/header';
 import Loading from './components/loading';
 import NewsList from './components/newsList';
 import Pagination from './components/pagination';
 import { newsCategory } from './news';
-
-const fakeNews = [
-  {
-    title: 'Title',
-    content: 'Content',
-    url: 'https://url.com',
-    urlToImage: 'https://url.com',
-    publishedAt: '4-02-2021',
-    source: {
-      name: 'CNN'
-    }
-  },
-  {
-    title: 'Title',
-    content: 'Content',
-    url: 'https://url.com',
-    urlToImage: 'https://url.com',
-    publishedAt: '4-02-2021',
-    source: {
-      name: 'CNN'
-    }
-  }
-]
 class App extends Component {
+  state = {
+    news: []
+  }
+  
+  componentDidMount() {
+    const url = `${process.env.REACT_APP_NEWS_URL}?apiKey=${process.env.REACT_APP_NEWS_API_KEY}&category=business&pageSize=5`
+    axios.get(url)
+      .then(res => {
+        this.setState({
+          news: res.data.articles
+        })
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
   render() {
+    console.log(this.state.news)
     return (
       <div className="container">
         <div className="row">
@@ -42,7 +37,7 @@ class App extends Component {
                 {1} page of {100}
               </p>
             </div>
-            <NewsList news={fakeNews} />
+            <NewsList news={this.state.news} />
             <Pagination />
             <Loading />
           </div>
