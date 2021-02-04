@@ -7,7 +7,11 @@ import Pagination from './components/pagination';
 import { newsCategory } from './news';
 class App extends Component {
   state = {
-    news: []
+    news: [],
+    category: newsCategory.technology
+  }
+  changeCategory = (category) => {
+    this.setState({ category })
   }
   
   componentDidMount() {
@@ -28,7 +32,7 @@ class App extends Component {
       <div className="container">
         <div className="row">
           <div className='col-sm-6 offset-md-3'>
-            <Header category={newsCategory.business} /> 
+            <Header category={this.state.category} changeCategory={this.changeCategory} /> 
             <div className="d-flex">
               <p className='text-black-50'>
                 About {0} result found
