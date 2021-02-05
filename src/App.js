@@ -70,6 +70,19 @@ class App extends Component {
 
   }
 
+  changeCategory = (category) => {
+    this.setState({ isLoading : true })
+    news.changeCategory(category) 
+      .then(data => {
+        this.setState({data, isLoading: false})
+      })
+      .catch(e => {
+        console.log(e);
+        alert('Something went wrong')
+        this.setState({ isLoading: false })
+      })
+  }
+
   render() {
     const {
       article,
@@ -84,20 +97,20 @@ class App extends Component {
       <div className="container">
         <div className="row">
           <div className='col-sm-6 offset-md-3'>
-            <Header category={this.state.category} changeCategory={this.changeCategory} /> 
+            <Header category={category} changeCategory={this.changeCategory} /> 
             <div className="d-flex">
               <p className='text-black-50'>
-                About {0} result found
+                About {totalResults} result found
               </p>
               <p className='text-black-50 ml-auto'>
-                {1} page of {100}
+                {currentPage} page of {totalPage}
               </p>
             </div>
             {this.state.isLoading ? (
               <Loading />
             ): (
                 <div>
-                  <NewsList news={this.state.data.article} />
+                  <NewsList news={article} />
                   <Pagination
                     next={this.next}
                     prev={this.prev}
