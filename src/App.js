@@ -48,6 +48,27 @@ class App extends Component {
         alert('Something went wrong')
       })
   }
+  handlePageChange = value => {
+    this.setState({ 
+        data: {
+          ...this.state.data,
+          currentPage: Number.parseInt(value) 
+        }
+     })
+  }
+  goToPage = () => {
+    this.setState({ isLoading: true })
+    news.setCurrentPage(this.state.data.currentPage)
+      .then(data => {
+        this.setState({ data, isLoading: false })
+      })
+      .catch(e => {
+        console.log(e);
+        alert('Something went wrong')
+        this.setState({ isLoading: false })
+      })
+
+  }
 
   render() {
     const {
@@ -84,6 +105,8 @@ class App extends Component {
                     isNext={isNext}
                     totalPage={totalPage}
                     currentPage={currentPage}
+                    handlePageChange={this.handlePageChange}
+                    goToPage={this.goToPage}
                   />
                 </div>
             )}

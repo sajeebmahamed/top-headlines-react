@@ -11,6 +11,8 @@ class Pagination extends React.Component {
             isNext,
             totalPage,
             currentPage,
+            handlePageChange,
+            goToPage
         } = this.props
         return (
             <div className='d-flex my-5 align-items-center'>
@@ -21,7 +23,17 @@ class Pagination extends React.Component {
                 > Previous </button>
                 <div className='flex-grow-1 text-center'>
                     {this.state.isEditable ? (
-                        <input type="number" value='1'/>
+                        <input type="number"
+                            value={currentPage}
+                            onChange={e => handlePageChange(e.target.value)}
+                            onKeyPress={(e) => {
+                                if(e.key === 'Enter') {
+                                    goToPage()
+                                    this.setState({ isEditable: false })
+                                }
+                            }}
+                        
+                        />
                     ) : (
                         <p
                             style={{
@@ -35,7 +47,7 @@ class Pagination extends React.Component {
                                 })
                             }}
                         >
-                            {1} of {100}
+                            {currentPage} of {totalPage}
                             <br/>
                             <small> Double tab to edit  </small>
                         </p>
