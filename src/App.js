@@ -4,46 +4,61 @@ import Loading from './components/loading';
 import NewsList from './components/newsList';
 import Pagination from './components/pagination';
 import News, { newsCategory } from './news';
+
+const news =  new News(newsCategory.technology) 
 class App extends Component {
   state = {
-    news: [],
-    category: newsCategory.technology
+    data: {},
+    isLoading: true
   }
-  changeCategory = (category) => {
-    this.setState({ category })
-  }
-  
   componentDidMount() {
-    // const url = `${process.env.REACT_APP_NEWS_URL}?apiKey=${process.env.REACT_APP_NEWS_API_KEY}&category=${this.state.category}&pageSize=10`
-    // axios.get(url)
-    //   .then(res => {
-    //     this.setState({
-    //       news: res.data.articles
-    //     })
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   })
-    const news = new News(newsCategory.technology)
-    news.getNews().then((data) => {
-      console.log(data);
-    })
+     news.getNews()
+      .then(data => {
+        this.setState({ data, isLoading: false })
+      })
+      .catch(e => {
+        console.log(e);
+        alert('Something went wrong')
+        this.setState({ isLoading: false })
+      })
   }
-  componentDidUpdate(prevProps, prevState) {
-    // if(prevState.category !== this.state.category) {
-    //   const url = `${process.env.REACT_APP_NEWS_URL}?apiKey=${process.env.REACT_APP_NEWS_API_KEY}&category=${this.state.category}&pageSize=10`
-    //   axios.get(url)
-    //     .then(res => {
-    //       this.setState({
-    //         news: res.data.articles
-    //       })
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //     })
-    // }
+  next = () => {
+    if(this.state.data.isNext) {
+      this.setState({ isLoading: true })
+    }
+    news.next()
+      .then(data => {
+        this.setState({ data, isLoading: false })
+      })
+      .catch(e => {
+        console.log(e);
+        alert('Something went wrong')
+      })
   }
+  prev = () => {
+    if (this.state.data.isPrev) {
+      this.setState({ isLoading: true })
+    }
+    news.prev() 
+      .then(data => {
+        this.setState({ data, isLoading: false })
+      })
+      .catch(e => {
+        console.log(e);
+        alert('Something went wrong')
+      })
+  }
+
   render() {
+    const {
+      article,
+      isPrev,
+      isNext,
+      category,
+      totalResults,
+      totalPage,
+      currentPage
+     } = this.state.data
     return (
       <div className="container">
         <div className="row">
@@ -57,9 +72,21 @@ class App extends Component {
                 {1} page of {100}
               </p>
             </div>
-            <NewsList news={this.state.news} />
-            <Pagination />
-            <Loading />
+            {this.state.isLoading ? (
+              <Loading />
+            ): (
+                <div>
+                  <NewsList news={this.state.data.article} />
+                  <Pagination
+                    next={this.next}
+                    prev={this.prev}
+                    isPrev={isPrev}
+                    isNext={isNext}
+                    totalPage={totalPage}
+                    currentPage={currentPage}
+                  />
+                </div>
+            )}
           </div>
         </div>
       </div>
