@@ -82,6 +82,18 @@ class App extends Component {
         this.setState({ isLoading: false })
       })
   }
+  search = (searchTerm) => {
+    this.setState({ isLoading: true })
+    news.search(searchTerm)
+      .then(data => {
+        this.setState({ data, isLoading: false })
+      })
+      .catch(e => {
+        console.log(e);
+        alert('Something went wrong')
+        this.setState({ isLoading: false })
+      })
+  }
 
   render() {
     const {
@@ -97,7 +109,11 @@ class App extends Component {
       <div className="container">
         <div className="row">
           <div className='col-sm-6 offset-md-3'>
-            <Header category={category} changeCategory={this.changeCategory} /> 
+            <Header
+              category={category}
+              changeCategory={this.changeCategory}
+              search={this.search}
+            /> 
             <div className="d-flex">
               <p className='text-black-50'>
                 About {totalResults} result found
