@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { newsCategory } from '../news/index';
 class Header extends Component {
     state = {
         searchTerm: ''
     }
+    searchRef = createRef()
     handleChange = e => {
         this.setState({
             searchTerm: e.target.value
@@ -14,6 +15,9 @@ class Header extends Component {
             this.props.search(this.state.searchTerm)
         }
     }
+    componentDidMount() {
+        this.searchRef.current.focus()
+    }
     render() {
         const { category, changeCategory } = this.props
         return (
@@ -22,6 +26,7 @@ class Header extends Component {
                     Top News Headlines
                 </h1>
                 <input
+                    ref={this.searchRef}
                     type="search"
                     className='form-control'
                     placeholder='Type anything & press enter to search'

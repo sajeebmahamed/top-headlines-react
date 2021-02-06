@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import Header from './components/header';
 import Loading from './components/loading';
 import NewsList from './components/newsList';
@@ -11,6 +11,7 @@ class App extends Component {
     data: {},
     isLoading: true
   }
+  goToTop = createRef()
   componentDidMount() {
      news.getNews()
       .then(data => {
@@ -94,6 +95,9 @@ class App extends Component {
         this.setState({ isLoading: false })
       })
   }
+  goTop = () => {
+    window.scroll(0, this.goToTop.current.scrollTop)
+  }
 
   render() {
     const {
@@ -114,7 +118,7 @@ class App extends Component {
               changeCategory={this.changeCategory}
               search={this.search}
             /> 
-            <div className="d-flex">
+            <div ref={this.goToTop} className="d-flex">
               <p className='text-black-50'>
                 About {totalResults} result found
               </p>
@@ -137,6 +141,7 @@ class App extends Component {
                     handlePageChange={this.handlePageChange}
                     goToPage={this.goToPage}
                   />
+                  <button onClick={this.goTop} className='btn btn-secondary my-5'> Go to Top </button>
                 </div>
             )}
           </div>
